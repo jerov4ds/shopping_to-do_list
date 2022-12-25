@@ -13,4 +13,8 @@ class Category extends Model
         "title",
         "user_id"
     ];
+
+    public function items(){
+        $this->hasMany("App\Models\Item", "category_id");
+    }
 }

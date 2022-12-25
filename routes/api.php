@@ -14,6 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::group(['middleware' => ['cors', 'json.response']], function () {
+    Route::post('lists', 'Api\CategoriesController@store');
+    Route::get('lists', 'Api\CategoriesController@index');
+    Route::get('lists/{id}', 'Api\CategoriesController@show');
+    Route::patch('lists/{id}', 'Api\CategoriesController@update');
+    Route::delete('lists/{id}', 'Api\CategoriesController@reset');
+});
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
