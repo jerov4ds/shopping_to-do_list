@@ -23,7 +23,7 @@ class CategoriesController extends Controller
         $sort_type = ($request->sort_type ?? 'ASC');
         $title = ($request->title ?? '');
 
-        $categories = Category::whereRaw('name LIKE "%'. $title . '%"')
+        $categories = Category::whereRaw('title LIKE "%'. $title . '%"')
             ->orderBy($sort_by, $sort_type)
             ->paginate($page_size, ['*'], 'page', $page_num);
 
@@ -66,8 +66,8 @@ class CategoriesController extends Controller
             return response()->json([
                 'code'=>'501',
                 'status'=> 'failed',
-                'message'=> 'Issuer could not be saved'
-            ], 200);
+                'message'=> 'List could not be created'
+            ], 501);
         }
 
     }
@@ -140,7 +140,7 @@ class CategoriesController extends Controller
                 'code'=>'400',
                 'status'=> 'failed',
                 'message'=> 'List title could not be updated'
-            ], 200);
+            ], 501);
         }
     }
 
