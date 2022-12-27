@@ -43,7 +43,8 @@ class CategoriesController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255|unique:categories,title'
+            'title' => 'required|string|max:255|unique:categories,title',
+            'type'  => 'required|string|in:shopping,todo'
         ]);
 
         if($validator->fails()){
@@ -55,6 +56,7 @@ class CategoriesController extends Controller
 
         $category = new Category();
         $category->title = $request->title;
+        $category->type = $request->type;
 
         if($category->save()){
             return response()->json([
