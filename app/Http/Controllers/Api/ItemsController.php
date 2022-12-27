@@ -42,9 +42,9 @@ class ItemsController extends Controller
             ->paginate($page_size, ['*'], 'page', $page_num);
 
         return response()->json([
-            'code'=> '200',
-            'status'=> 'success',
-            'data'=> $items
+            'code'      => '200',
+            'status'    => 'success',
+            'data'      => $items
         ], 200);
     }
 
@@ -58,36 +58,17 @@ class ItemsController extends Controller
     {
         //
         $validator = Validator::make($request->all(), [
-            'title'         => 'required|string|max:255|unique:items,title',
-            'category_id'   => 'required|number'
+            'title'         => 'required|string|max:255',
+            'category_id'   => 'required|integer'
         ]);
 
         if($validator->fails()){
             return response()->json([
-                'code' => '403',
-                'status'=>"Validation Failure",
-                'message'=> $validator->messages()], 403);
+                'code'      => '403',
+                'status'    => 'Validation Failure',
+                'message'   => $validator->messages()], 403);
         }
 
-        $file_path = '';
-        if ($request->image) {
-            $folderPath = "uploads/";
-
-            $base64Image = explode(";base64,", $request->image);
-            $explodeImage = explode("image/", $base64Image[0]);
-            $imageType = $explodeImage[1];
-            $image_base64 = base64_decode($base64Image[1]);
-            $arr_ext = array('jpg', 'jpeg', 'png', 'gif', 'JPG', 'JPEG', 'PNG', 'GIF');
-            if(in_array($imageType, $arr_ext)){
-                return response()->json([
-                    'code'      => '403',
-                    'status'    => 'Invalid file type',
-                    'message'   => 'Only jpg, jpeg, png and gif file types are supported'], 403);
-            }
-            $file_path = $folderPath . uniqid() . '. '.$imageType;
-
-            file_put_contents($file_path, $image_base64);
-        }
         $is_completed = $request->is_completed ?? false;
 
         if($id != null){
@@ -101,23 +82,41 @@ class ItemsController extends Controller
         } else {
             $item = new Item();
         }
-        $item->title            = $request->title;
-        $item->category_id      = $request->category_id;
-        $item->description      = $request->description;
-        $item->image            = $file_path;
-        $item->is_completed     = $is_completed;
+        if($request->title) $item->title = $request->title;
+        if($request->category_id) $item->category_id = $request->category_id;
+        if($request->description) $item->description = $request->description;
+        if($request->is_completed) $item->is_completed = $is_completed;
+        if ($request->image) {
+            $folderPath = public_path("img\\");
+
+            $base64Image = explode(";base64,", $request->image);
+            $explodeImage = explode("image/", $base64Image[0]);
+            $imageType = $explodeImage[1];
+            $image_base64 = base64_decode($base64Image[1]);
+            $arr_ext = array('jpg', 'jpeg', 'png', 'gif', 'JPG', 'JPEG', 'PNG', 'GIF');
+            if(!in_array($imageType, $arr_ext)){
+                return response()->json([
+                    'code'      => '403',
+                    'status'    => 'Invalid file type',
+                    'message'   => 'Only jpg, jpeg, png and gif file types are supported'], 403);
+            }
+            $file_path = $folderPath . uniqid() . '.'.$imageType;
+
+            file_put_contents($file_path, $image_base64);
+            $item->image = $file_path;
+        }
 
         if($item->save()){
             return response()->json([
-                'code'=> 200,
-                'message'=> 'Item marked as completed',
-                'data'=> $item
+                'code'      => 200,
+                'message'   => 'Item saved',
+                'data'      => $item
             ]);
         } else {
             return response()->json([
-                'code'=>'501',
-                'status'=> 'failed',
-                'message'=> 'An error occurred please try again!'
+                'code'      => '501',
+                'status'    => 'failed',
+                'message'   => 'An error occurred please try again!'
             ], 501);
         }
     }
@@ -134,16 +133,16 @@ class ItemsController extends Controller
         $item = Item::where('id', $id)->with('category')->first();
         if($item == null){
             return response([
-                'code'=>'404',
-                'status'=> 'Not Found',
-                'message'=> 'Item not found or deleted'
+                'code'      =>'404',
+                'status'    => 'Not Found',
+                'message'   => 'Item not found or deleted'
             ], 404);
         }
 
         return response([
-            'code'=> '200',
-            'status'=> 'success',
-            'data'=> $item
+            'code'      => '200',
+            'status'    => 'success',
+            'data'      => $item
         ], 200);
     }
 
@@ -151,12 +150,18 @@ class ItemsController extends Controller
         $item = Item::find($id);
         if($item == null){
             return response([
-                'code'=>'404',
-                'status'=> 'Not Found',
-                'message'=> 'Item not found or deleted'
+                'code'      => '404',
+                'status'    => 'Not Found',
+                'message'   => 'Item not found or deleted'
             ], 404);
         }
         $item->is_complete = true;
+
+        return response([
+            'code'      => '200',
+            'status'    => 'Item marked as competed',
+            'data'      => $item
+        ], 200);
 
     }
 
@@ -172,17 +177,17 @@ class ItemsController extends Controller
         $item = Item::find($id);
         if($item == null){
             return response([
-                'code'=>'404',
-                'status'=> 'Not Found',
-                'message'=> 'Item not found or deleted'
+                'code'      => '404',
+                'status'    => 'Not Found',
+                'message'   => 'Item not found or deleted'
             ], 404);
         }
 
         $item->delete();
         return response()->json([
-            'code'=>'200',
-            'status'=> 'success',
-            'data'=> 'deletion successful'
+            'code'      =>'200',
+            'status'    => 'success',
+            'message'   => 'deletion successful'
         ], 200);
     }
 }
