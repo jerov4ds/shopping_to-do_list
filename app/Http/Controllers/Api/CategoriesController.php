@@ -23,9 +23,22 @@ class CategoriesController extends Controller
         $sort_type = ($request->sort_type ?? 'ASC');
         $title = ($request->title ?? '');
 
-        $categories = Category::whereRaw('title LIKE "%'. $title . '%"')
+        $toDo = Category::selectRaw("categories.*,
+                                (SELECT COUNT(*) FROM items WHERE category_id = categories.id AND is_complete = 1) AS completed,
+                                (SELECT COUNT(*) FROM items WHERE category_id = categories.id) AS items_count")
+            ->whereRaw('title LIKE "%'. $title . '%"')
+            ->where('type', 'todo')
             ->orderBy($sort_by, $sort_type)
             ->paginate($page_size, ['*'], 'page', $page_num);
+
+        $shopping = Category::selectRaw("categories.*,
+                                (SELECT COUNT(*) FROM items WHERE category_id = categories.id AND is_complete = 1) AS completed,
+                                (SELECT COUNT(*) FROM items WHERE category_id = categories.id) AS items_count")
+            ->whereRaw('title LIKE "%'. $title . '%"')
+            ->where('type', 'shopping')
+            ->orderBy($sort_by, $sort_type)
+            ->paginate($page_size, ['*'], 'page', $page_num);
+        $categories = ['todo'=>$toDo, 'shopping'=>$shopping];
 
         return response()->json([
             'code'=> '200',

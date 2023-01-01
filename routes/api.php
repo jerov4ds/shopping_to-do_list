@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => ['cors', 'json.response']], function () {
+//Route::group(['middleware' => ['cors', 'json.response']], function () {
     Route::post('lists', [CategoriesController::class, 'store']);
     Route::get('lists', [CategoriesController::class, 'index']);
     Route::get('lists/{id}', [CategoriesController::class, 'show']);
@@ -28,7 +28,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
     Route::get('items/{id}', [ItemsController::class, 'show']);
     Route::patch('items/{id}', [ItemsController::class, 'mark_as_complete']);
     Route::delete('items/{id}', [ItemsController::class, 'destroy']);
-});
+//});
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

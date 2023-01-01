@@ -3,10 +3,16 @@
 namespace App\Http;
 
 use App\Http\Middleware\Cors;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Routing\Router;
 
 class Kernel extends HttpKernel
 {
+    public function __construct( Application $app, Router $router ) {
+        parent::__construct( $app, $router );
+        $this->prependToMiddlewarePriority(\App\Http\Middleware\ForceJsonResponse::class);
+    }
     /**
      * The application's global HTTP middleware stack.
      *
@@ -56,6 +62,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
