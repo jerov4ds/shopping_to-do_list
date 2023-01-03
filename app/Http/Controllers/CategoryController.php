@@ -15,6 +15,18 @@ class CategoryController extends Controller
         return view('welcome', compact('lists'));
     }
 
+    public function modal(Request $request){
+        $list = '';
+        $type = $request->type;
+        if(!empty($request->list_id)){
+            $response = ApiGateway::getAction('lists/'. $request->list_id);
+            $data = json_decode($response->body());
+            $list = $data->data;
+        }
+
+        return view('modals.list', compact('list', 'type'));
+    }
+
     public function create(Request $request){
 
     }
