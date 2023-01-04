@@ -13,7 +13,7 @@
                                                 <div class="col">
                                                     <div class="overflow-hidden flex-nowrap">
                                                         <h6 class="mb-1">
-                                                            <a href="/list/{{ $list->id }}/items" class="text-reset">{{ $list->title }}</a>
+                                                            <a href="{{ url('/list/'. $list->id . '/items') }}" class="text-reset">{{ $list->title }}</a>
                                                             <button class="btn btn-sm btn-warning float-right ml-1" onclick="deleteList('{{ $list->id }}')" id="deleteList{{ $list->id }}"><i class="fa fa-trash"></i></button>
                                                             <button class="btn btn-sm btn-success float-right ml-1"  onclick="createList('todo', '{{ $list->id }}')" data-toggle="modal" data-target="#createListModal"><i class="fa fa-pencil"></i></button>
                                                         </h6>
@@ -66,7 +66,7 @@
                                                 <div class="col">
                                                     <div class="overflow-hidden flex-nowrap">
                                                         <h6 class="mb-1">
-                                                            <a href="/list/{{ $list->id }}/items" class="text-reset">{{ $list->title }}</a>
+                                                            <a href="{{ url('/list/'. $list->id . '/items') }}" class="text-reset">{{ $list->title }}</a>
                                                             <button class="btn btn-sm btn-warning float-right ml-1" onclick="deleteList('{{ $list->id }}')" id="deleteList{{ $list->id }}"><i class="fa fa-trash"></i></button>
                                                             <button class="btn btn-sm btn-success float-right ml-1"  onclick="createList('todo', '{{ $list->id }}')" data-toggle="modal" data-target="#createListModal"><i class="fa fa-pencil"></i></button>
                                                         </h6>
