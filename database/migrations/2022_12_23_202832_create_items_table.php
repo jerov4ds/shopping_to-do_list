@@ -19,7 +19,7 @@ class CreateItemsTable extends Migration
             $table->foreign('category_id')->references('id')->on('categories');
             $table->unsignedBigInteger("user_id")->nullable();
             $table->string("title");
-            $table->string("image");
+            $table->string("image")->nullable();
             $table->boolean("is_complete")->default(false);
             $table->text("description");
             $table->softDeletes();

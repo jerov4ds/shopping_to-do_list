@@ -100,10 +100,11 @@ class ItemsController extends Controller
                     'status'    => 'Invalid file type',
                     'message'   => 'Only jpg, jpeg, png and gif file types are supported'], 403);
             }
-            $file_path = $folderPath . uniqid() . '.'.$imageType;
+            $file_name = uniqid() . '.'.$imageType;
+            $file_path = $folderPath . $file_name;
 
             file_put_contents($file_path, $image_base64);
-            $item->image = $file_path;
+            $item->image = $file_name;
         }
 
         if($item->save()){
@@ -156,6 +157,7 @@ class ItemsController extends Controller
             ], 404);
         }
         $item->is_complete = true;
+        $item->save();
 
         return response([
             'code'      => '200',

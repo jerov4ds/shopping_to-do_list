@@ -27,7 +27,31 @@ class CategoryController extends Controller
         return view('modals.list', compact('list', 'type'));
     }
 
-    public function create(Request $request){
+    public function items($id){
+        $response = ApiGateway::getAction('lists/'. $id);
+        $data = json_decode($response->body());
+        $list = $data->data;
+        if(!empty($list)) return view('items', compact('list'));
+        else return redirect()->back();
+    }
 
+    public function itemModal(Request $request){
+        $cat_id = $request->category_id;
+        $item = '';
+        if(!empty($request->item_id)){
+            $response = ApiGateway::getAction('items/'. $request->item_id);
+            $data = json_decode($response->body());
+            $item = $data->data;
+        }
+
+        return view('modals.item', compact( 'item', 'cat_id'));
+    }
+
+    public function itemDetails($id){
+            $response = ApiGateway::getAction('items/'. $id);
+            $data = json_decode($response->body());
+            $item = $data->data;
+
+        return view('modals.item_details', compact( 'item'));
     }
 }
