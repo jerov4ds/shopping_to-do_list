@@ -2,9 +2,9 @@
 
 @section('content')
     <style>
-        body {
-            overflow-y: hidden;
-        }
+        /*body {*/
+        /*    overflow-y: hidden;*/
+        /*}*/
         .items-area {
             position: relative;
             height: 380px;
